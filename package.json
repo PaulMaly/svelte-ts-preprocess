@@ -1,0 +1,38 @@
+{
+    "name": "svelte-transitions-morph",
+    "version": "1.0.0",
+    "description": "Morphing transition plugin for Svelte 3",
+    "main": "index.js",
+    "module": "module.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "rollup -c",
+        "prepublish": "npm run lint && npm run build",
+        "lint": "eslint src"
+    },
+    "files": [
+        "index.js",
+        "module.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/PaulMaly/svelte-transitions-morph.git"
+    },
+    "keywords": [
+        "svelte",
+        "transitions",
+        "css",
+        "animation"
+    ],
+    "author": "PaulMaly",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/PaulMaly/svelte-transitions-morph/issues"
+    },
+    "homepage": "https://github.com/PaulMaly/svelte-transitions-morph#readme",
+    "devDependencies": {
+        "eslint": "^5.12.0",
+        "eslint-plugin-import": "^2.14.0",
+        "rollup": "^1.1.0"
+    }
+}
