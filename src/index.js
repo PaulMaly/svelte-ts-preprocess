@@ -1,26 +1,66 @@
-export default function morph(node, params) {
-	const {
-			delay = 0,
-			duration = 400,
-			easing = t => 1 - Math.pow(1 - t, 3),
-			from = { left: 0, top: 0, width: 0, height: 0 }
-		} = params,
-		to = node.getBoundingClientRect(),
-		ty = from.top - to.top,
-		tx = from.left - to.left,
-		sx = from.width / to.width - 1,
-		sy = from.height / to.height - 1;
+const fs = require('fs'),
+	ts = require('typescript'),
+	colors = require('colors');
 
+function printDiagnostics(diagnostics) {
+	diagnostics.forEach(diagnostic => {
+		if (diagnostic.file) {
+			const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start),
+				message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
+			console.log(colors.yellow(`${diagnostic.file.fileName.replace('.ts', '')} (${line + 1},${character + 1}): ${message}`));
+		} else {
+			console.log(colors.yellow(`${ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')}`));
+		}
+	});
+}
+
+module.exports = function (options) {
 	return {
-		delay,
-		easing,
-		duration,
-		css: (t, u) => {
-			return `
-				transform: 
-					translate(${u * tx}px, ${u * ty}px) 
-					scale(${1 + u * sx}, ${1 + u * sy});
-			`;
+		script: ({ content, attributes, filename }) => {
+			if (attributes && ['ts', 'typescript'].includes(attributes.lang)) return;
+
+			return new Promise(resolve => {
+				options ? 
+					resolve(options) : 
+					fs.readFile('tsconfig.json', (err, content) => {
+						if (err) throw err;
+						resolve(JSON.parse(content));
+					});
+			}).then(options => {
+				const opts = Object.assign({}, ts.getDefaultCompilerOptions(), options),
+					realHost = ts.createCompilerHost(opts, true),
+					dummyFilePath = `/${filename}.ts`,
+					dummySourceFile = ts.createSourceFile(dummyFilePath, content, ts.ScriptTarget.Latest);
+
+				let output;
+
+				const libs = opts.compilerOptions.lib || [],
+					host = {
+						fileExists: filePath => filePath === dummyFilePath || realHost.fileExists(filePath),
+						directoryExists: realHost.directoryExists && realHost.directoryExists.bind(realHost),
+						getCurrentDirectory: realHost.getCurrentDirectory.bind(realHost),
+						getDirectories: realHost.getDirectories.bind(realHost),
+						getCanonicalFileName: fileName => realHost.getCanonicalFileName(fileName),
+						getNewLine: realHost.getNewLine.bind(realHost),
+						getDefaultLibFileName: realHost.getDefaultLibFileName.bind(realHost),
+						getSourceFile: (fileName, languageVersion, onError, shouldCreateNewSourceFile) => fileName === dummyFilePath
+							? dummySourceFile
+							: realHost.getSourceFile(fileName, languageVersion, onError, shouldCreateNewSourceFile),
+						readFile: filePath => filePath === dummyFilePath ? content : realHost.readFile(filePath),
+						useCaseSensitiveFileNames: () => realHost.useCaseSensitiveFileNames(),
+						writeFile: (fileName, data) => (output = data),
+					},
+					rootNames = libs.map(lib => require.resolve(`typescript/lib/lib.${lib}.d.ts`)),
+					program = ts.createProgram(rootNames.concat([dummyFilePath]), opts, host),
+					emitResult = program.emit(),
+					diagnostics = ts.getPreEmitDiagnostics(program);
+
+				printDiagnostics(emitResult.diagnostics.concat(diagnostics));
+
+				const { outputText: code } = ts.transpileModule(content, opts);
+
+				return { code };
+			});
 		}
 	};
-}
+};

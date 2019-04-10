@@ -1,38 +1,36 @@
 {
-    "name": "svelte-transitions-morph",
-    "version": "1.0.1",
-    "description": "Morphing transition plugin for Svelte 3",
-    "main": "index.js",
-    "module": "index.mjs",
+    "name": "svelte-ts-preprocess",
+    "version": "1.0.0",
+    "description": "Typescript preprocessor for Svelte 3",
+    "main": "src/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "rollup -c",
-        "prepublish": "npm run lint && npm run build",
+        "prepublish": "npm run lint",
         "lint": "eslint src"
     },
     "files": [
-        "index.js",
-        "index.mjs"
+        "src/index.js"
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/PaulMaly/svelte-transitions-morph.git"
+        "url": "git+https://github.com/PaulMaly/svelte-ts-preprocess.git"
     },
     "keywords": [
         "svelte",
-        "transitions",
-        "css",
-        "animation"
+        "preprocessors"
     ],
     "author": "PaulMaly",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/PaulMaly/svelte-transitions-morph/issues"
+        "url": "https://github.com/PaulMaly/svelte-ts-preprocess/issues"
     },
-    "homepage": "https://github.com/PaulMaly/svelte-transitions-morph#readme",
+    "homepage": "https://github.com/PaulMaly/svelte-ts-preprocess#readme",
     "devDependencies": {
-        "eslint": "^5.12.0",
-        "eslint-plugin-import": "^2.14.0",
-        "rollup": "^1.1.0"
+        "eslint": "latest",
+        "eslint-plugin-import": "latest"
+	},
+	"dependencies": {
+        "colors": "latest",
+		"typescript": "latest"
     }
 }

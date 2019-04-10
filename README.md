@@ -1,70 +1,92 @@
-# svelte-transitions-morph ([demo](https://v3.svelte.technology/repl?version=3.0.0-alpha17&gist=b1ec0d308e5c78d98af8cfb1842b8aa8))
+***!!! THIS PREPROCESSOR IS VERY EXPERIMENTAL !!!***
 
-Morphing transition plugin for [Svelte 3](https://v3.svelte.technology).
+# svelte-ts-preprocess
+
+Typescript type-checking preprocessor for [Svelte 3](https://v3.svelte.technology).
 
 ## Usage
 
 Install with npm or yarn:
 
 ```bash
-npm install --save svelte-transitions-morph
+npm install --save-dev svelte-ts-preprocess
 ```
 
-Then import the plugin to your Svelte component.
+Then import the plugin to your bundler config. Rollup example below.
+
+```javascript
+import svelte from 'rollup-plugin-svelte';
+import ts from 'svelte-ts-preprocess';
+...
+export default {
+	...
+	plugins: [
+		svelte({
+			...
+			preprocess: [
+				ts()
+			]
+		}),
+		...
+	]
+};
+```
+
+Or use it with [svelte-preprocess](https://www.npmjs.com/package/svelte-preprocess):
+
+```javascript
+import svelte from 'rollup-plugin-svelte';
+import ts from 'svelte-ts-preprocess';
+import preprocess from 'svelte-preprocess';
+...
+export default {
+	...
+	plugins: [
+		svelte({
+			...
+			preprocess: preprocess({
+				transformers: { 
+					ts: ts().script
+				},
+				aliases: [
+					['ts', 'typescript']
+				]
+			})
+		}),
+		...
+	]
+};
+```
+
+## Options
+
+By default Typescript options will be retrieved from *tsconfig.json* but you also can pass config object directly to the preprocessor function. You should choose one of this variants to get it work.
+
+## Example
+
+After preprocessor is setted up you'll be able to write Typescript code inside of component's script.
 
 ```html
-<label>
-	<input bind:checked={visible} type=checkbox> show
-</label>
- 
-{#if visible}
-<div transition:morph class="block"></div>
-{/if}
- 
-<script>
-  import morph from 'svelte-transitions-morph';
+<script lang="ts">
+	interface HTMLInputTarget {
+    	"target": HTMLInputElement;
+	}
 
-  let visible = false;
-</script> 
- 
-<style>
-  .block { background: red; color: white; width: 300px; height: 100px; }
-</style>
+	export let num: number = 0;
+
+	function handleChange(e: HTMLInputTarget) {
+		num = e.target.value;
+	}
+</script>
+
+<input on:change={handleChange} placeholper="Enter a number">
 ```
-[demo](https://v3.svelte.technology/repl?version=3.0.0-alpha17&gist=b1ec0d308e5c78d98af8cfb1842b8aa8)
 
-## Parameters
+And will get type-checking warnings upon building process.
 
-As with most transitions, you can specify `delay` and `duration` parameters (both in milliseconds) and a custom `easing` function. Also, you can specify `from` parameter which is initial rectangle from which exactly transition should start.
-
-```html
-<label>
-	<input bind:checked={visible} type=checkbox> show
-</label>
- 
-{#if visible}
-<div 
-  transition:morph={{ 
-    delay: 100, 
-    duration: 1000, 
-    easing: quintOut, 
-    from: { left: 10, top: 20, width: 100, height: 50 }
-  }} class="block"
-></div>
-{/if}
- 
-<script>
-  import morph from 'svelte-transitions-morph';
-  import { quintOut } from 'svelte/easing';
- 
-  let visible = false;
-</script> 
- 
-<style>
-  .block { background: red; color: white; width: 300px; height: 100px; }
-</style>
+```bash
+./src/App.svelte (9,2): Type 'string' is not assignable to type 'number'.
 ```
-[demo](https://v3.svelte.technology/repl?version=3.0.0-alpha17&gist=cc05a2f0a6dd3a354011a28a4554e3b5)
 
 ## License
 
