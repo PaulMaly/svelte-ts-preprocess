@@ -2,7 +2,7 @@ const fs = require('fs'),
 	ts = require('typescript'),
 	colors = require('colors');
 
-function printDiagnostics(diagnostics) {
+function printDiagnostics(diagnostics = []) {
 	diagnostics.forEach(diagnostic => {
 		if (diagnostic.file) {
 			const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start),
@@ -17,11 +17,11 @@ function printDiagnostics(diagnostics) {
 module.exports = function (options) {
 	return {
 		script: ({ content, attributes, filename }) => {
-			if (attributes && ['ts', 'typescript'].includes(attributes.lang)) return;
+			if (attributes && ! ['ts', 'typescript'].includes(attributes.lang)) return;
 
 			return new Promise(resolve => {
-				options ? 
-					resolve(options) : 
+				options ?
+					resolve(options) :
 					fs.readFile('tsconfig.json', (err, content) => {
 						if (err) throw err;
 						resolve(JSON.parse(content));

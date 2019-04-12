@@ -45,7 +45,7 @@ export default {
 		svelte({
 			...
 			preprocess: preprocess({
-				transformers: { 
+				transformers: {
 					ts: ts().script
 				},
 				aliases: [
