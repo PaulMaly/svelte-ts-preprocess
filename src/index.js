@@ -19,7 +19,7 @@ module.exports = function (options) {
 	return {
 		script: ({ content, attributes, filename }) => {
 			if (attributes && ! ['ts', 'typescript'].includes(attributes.lang)) return;
-        const configPath = ts.findConfigFile("./", ts.sys.fileExists, "tsconfig.json");
+        const configPath = ts.findConfigFile(process.cwd(), ts.sys.fileExists);
         if (!configPath) {
             throw new Error("Could not find a valid 'tsconfig.json'.");
         }
