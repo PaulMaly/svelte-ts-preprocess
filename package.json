@@ -28,9 +28,10 @@
     "devDependencies": {
         "eslint": "latest",
         "eslint-plugin-import": "latest"
-	},
-	"dependencies": {
+    },
+    "dependencies": {
         "colors": "latest",
-		"typescript": "latest"
+        "json5": "^2.1.0",
+        "typescript": "latest"
     }
 }
