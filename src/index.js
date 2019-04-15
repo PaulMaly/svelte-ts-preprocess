@@ -19,11 +19,15 @@ module.exports = function (options) {
 	return {
 		script: ({ content, attributes, filename }) => {
 			if (attributes && ! ['ts', 'typescript'].includes(attributes.lang)) return;
+        const configPath = ts.findConfigFile("./", ts.sys.fileExists, "tsconfig.json");
+        if (!configPath) {
+            throw new Error("Could not find a valid 'tsconfig.json'.");
+        }
 
 			return new Promise(resolve => {
 				options ?
 					resolve(options) :
-					fs.readFile('tsconfig.json', (err, content) => {
+					fs.readFile(configPath, (err, content) => {
 						if (err) throw err;
 						resolve(JSON5.parse(content));
 					});
