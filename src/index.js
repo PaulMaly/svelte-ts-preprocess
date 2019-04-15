@@ -1,6 +1,7 @@
 const fs = require('fs'),
 	ts = require('typescript'),
-	colors = require('colors');
+  colors = require('colors'),
+  JSON5 = require('json5');
 
 function printDiagnostics(diagnostics = []) {
 	diagnostics.forEach(diagnostic => {
@@ -24,7 +25,7 @@ module.exports = function (options) {
 					resolve(options) :
 					fs.readFile('tsconfig.json', (err, content) => {
 						if (err) throw err;
-						resolve(JSON.parse(content));
+						resolve(JSON5.parse(content));
 					});
 			}).then(options => {
 				const opts = Object.assign({}, ts.getDefaultCompilerOptions(), options),
