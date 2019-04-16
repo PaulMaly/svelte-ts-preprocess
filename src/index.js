@@ -64,6 +64,9 @@ module.exports = function (options) {
 
 				const { outputText: code } = ts.transpileModule(content, opts);
 
+          console.log('----------- begin: transpileModule ---------------')
+          console.log(code)
+          console.log('----------- end: transpileModule ---------------')
 				return { code };
 			});
 		}
