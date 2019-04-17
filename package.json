@@ -26,6 +26,8 @@
     },
     "homepage": "https://github.com/PaulMaly/svelte-ts-preprocess#readme",
     "devDependencies": {
+        "@typescript-eslint/typescript-estree": "^1.6.0",
+        "escodegen": "^1.11.1",
         "eslint": "latest",
         "eslint-plugin-import": "latest"
     },
