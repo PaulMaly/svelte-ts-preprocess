@@ -1,6 +1,5 @@
-<script>
-	export let name;
-</script>
+<h1>Hello {name}!</h1>
+<Form />
 
 <style>
 	h1 {
@@ -8,4 +7,10 @@
 	}
 </style>
 
-<h1>Hello {name}!</h1>
+<script lang="ts">
+	import Form from "./Form.svelte";
+	Form;
+
+	export let name;
+	let x: number = "string";
+</script>
