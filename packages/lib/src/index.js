@@ -7,15 +7,14 @@ function printDiagnostics(diagnostics = []) {
 	diagnostics.forEach(diagnostic => {
 		if (diagnostic.file) {
 			const {
-					line,
-					character
-				} = diagnostic.file.getLineAndCharacterOfPosition(
-					diagnostic.start
-				),
-				message = ts.flattenDiagnosticMessageText(
-					diagnostic.messageText,
-					"\n"
-				);
+				line,
+				character
+			} = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
+
+			const message = ts.flattenDiagnosticMessageText(
+				diagnostic.messageText,
+				"\n"
+			);
 			console.log(
 				colors.yellow(
 					`${diagnostic.file.fileName.replace(".ts", "")} (${line +
@@ -49,7 +48,7 @@ module.exports = function(options) {
 			}
 
 			return new Promise(resolve => {
-				options
+				return options
 					? resolve(options)
 					: fs.readFile(configPath, (err, content) => {
 							if (err) throw err;
@@ -59,42 +58,88 @@ module.exports = function(options) {
 				const opts = Object.assign(
 					{},
 					ts.getDefaultCompilerOptions(),
-					options
+					options,
+					{
+						reportDiagnostics: true
+					}
 				);
-				// realHost = ts.createCompilerHost(opts, true),
-				// dummyFilePath = `/${filename}.ts`,
-				// dummySourceFile = ts.createSourceFile(dummyFilePath, content, ts.ScriptTarget.Latest);
+				console.log("------------opts----------");
+				console.log(opts);
+				console.log("------------opts----------");
+				(realHost = ts.createCompilerHost(opts, true)),
+					(dummyFilePath = `/${filename}.ts`),
+					(dummySourceFile = ts.createSourceFile(
+						dummyFilePath,
+						content,
+						ts.ScriptTarget.Latest
+					));
 
-				// let output;
+				let output;
 
-				// const libs = opts.compilerOptions.lib || [],
-				// 	host = {
-				// 		fileExists: filePath => filePath === dummyFilePath || realHost.fileExists(filePath),
-				// 		directoryExists: realHost.directoryExists && realHost.directoryExists.bind(realHost),
-				// 		getCurrentDirectory: realHost.getCurrentDirectory.bind(realHost),
-				// 		getDirectories: realHost.getDirectories.bind(realHost),
-				// 		getCanonicalFileName: fileName => realHost.getCanonicalFileName(fileName),
-				// 		getNewLine: realHost.getNewLine.bind(realHost),
-				// 		getDefaultLibFileName: realHost.getDefaultLibFileName.bind(realHost),
-				// 		getSourceFile: (fileName, languageVersion, onError, shouldCreateNewSourceFile) => fileName === dummyFilePath
-				// 			? dummySourceFile
-				// 			: realHost.getSourceFile(fileName, languageVersion, onError, shouldCreateNewSourceFile),
-				// 		readFile: filePath => filePath === dummyFilePath ? content : realHost.readFile(filePath),
-				// 		useCaseSensitiveFileNames: () => realHost.useCaseSensitiveFileNames(),
-				// 		writeFile: (fileName, data) => (output = data),
-				// 	},
-				// 	rootNames = libs.map(lib => require.resolve(`typescript/lib/lib.${lib}.d.ts`)),
-				// 	program = ts.createProgram(rootNames.concat([dummyFilePath]), opts, host),
-				// 	emitResult = program.emit(),
-				// 	diagnostics = ts.getPreEmitDiagnostics(program);
+				const libs = opts.compilerOptions.lib || [];
+				const host = {
+					fileExists: filePath =>
+						filePath === dummyFilePath ||
+						realHost.fileExists(filePath),
+					directoryExists:
+						realHost.directoryExists &&
+						realHost.directoryExists.bind(realHost),
+					getCurrentDirectory: realHost.getCurrentDirectory.bind(
+						realHost
+					),
+					getDirectories: realHost.getDirectories.bind(realHost),
+					getCanonicalFileName: fileName =>
+						realHost.getCanonicalFileName(fileName),
+					getNewLine: realHost.getNewLine.bind(realHost),
+					getDefaultLibFileName: realHost.getDefaultLibFileName.bind(
+						realHost
+					),
+					getSourceFile: (
+						fileName,
+						languageVersion,
+						onError,
+						shouldCreateNewSourceFile
+					) =>
+						fileName === dummyFilePath
+							? dummySourceFile
+							: realHost.getSourceFile(
+									fileName,
+									languageVersion,
+									onError,
+									shouldCreateNewSourceFile
+							  ),
+					readFile: filePath =>
+						filePath === dummyFilePath
+							? content
+							: realHost.readFile(filePath),
+					useCaseSensitiveFileNames: () =>
+						realHost.useCaseSensitiveFileNames(),
+					writeFile: (fileName, data) => (output = data)
+				};
 
-				// printDiagnostics(emitResult.diagnostics.concat(diagnostics));
+				const rootNames = libs.map(lib =>
+					require.resolve(`typescript/lib/lib.${lib}.d.ts`)
+				);
+				const program = ts.createProgram(
+					rootNames.concat([dummyFilePath]),
+					opts,
+					host
+				);
+				const emitResult = program.emit(
+					dummySourceFile,
+					(filename, data) => {
+						console.log(data);
+					}
+				);
+				const diagnostics = ts.getPreEmitDiagnostics(program);
+
+				printDiagnostics(emitResult.diagnostics.concat(diagnostics));
 
 				const result = ts.transpileModule(content, opts);
 				printDiagnostics(result.diagnostics);
-				console.log("------------code----------");
-				console.log(result.outputText);
-				console.log("------------code----------");
+				console.log("------------result----------");
+				console.log(result);
+				console.log("------------result----------");
 
 				return { code: result.outputText };
 			});

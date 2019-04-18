@@ -7,6 +7,7 @@ import y from './module.ts';
 
 let x: string = y;
 let z: string = '';
+const a: number = 'aaa';
 `;
 
 let result = ts.transpileModule(source, {
