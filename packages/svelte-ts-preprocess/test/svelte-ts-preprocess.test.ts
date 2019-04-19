@@ -11,17 +11,27 @@ describe('preprocess test', () => {
 
   it('run preprocess', () => {
     // const code = ``
-    const content = ``
+    const content = `//comment
+import path from 'path';
+import Form from './Form.svelte';
+
+path.join()
+function x(){return 5;}
+console.log(x())
+let c: number = 5;
+`
     const filename = 'Component.svelte'
     const attributes = {
       lang: 'ts'
     }
-    expect(
-      preprocess().script({
-        content,
-        filename,
-        attributes
-      })
-    ).toHaveProperty('code')
+    const result = preprocess().script({
+      content,
+      filename,
+      attributes
+    })
+    if (result) {
+      expect(result).toHaveProperty('code')
+      expect(result.code).toBeTruthy()
+    }
   })
 })

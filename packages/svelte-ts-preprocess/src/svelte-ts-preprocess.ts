@@ -8,8 +8,8 @@ function importTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
       if (ts.isImportDeclaration(node)) {
         const text = node.moduleSpecifier.getText().slice(0, -1)
         if (text.endsWith('.svelte')) {
-          console.log('------- svelte import -----')
-          console.log(node.getFullText().trim())
+          // console.log('------- svelte import -----')
+          // console.log(node.getFullText().trim())
           return ts.createImportDeclaration(
             node.decorators,
             node.modifiers,
@@ -23,6 +23,13 @@ function importTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
 
     return node => ts.visitNode(node, visit)
   }
+}
+
+function isSvelteImport(d: ts.Diagnostic) {
+  return d.code == 2307 && typeof d.messageText == 'string' && /\.svelte['"]\.$/.test(d.messageText)
+}
+function clearDiagnostics(diagnostics: ReadonlyArray<ts.Diagnostic>) {
+  return diagnostics.filter(d => !isSvelteImport(d))
 }
 
 function getFormatDiagnosticsHost(cwd: string) {
@@ -49,7 +56,6 @@ function createProxyHost(host: ts.CompilerHost, file: File) {
         ? ts.createSourceFile(file.name, file.content, languageVersion)
         : host.getSourceFile(fileName, languageVersion, _onError)
     },
-    getDefaultLibFileName: () => '',
     writeFile: (_fileName, _content) => {
       throw new Error('unsupported')
     },
@@ -63,6 +69,7 @@ function createProxyHost(host: ts.CompilerHost, file: File) {
     fileExists: fileName => (fileName === file.name ? true : host.fileExists(fileName)),
     readFile: fileName => (fileName === file.name ? file.content : host.readFile(fileName)),
 
+    getDefaultLibFileName: host.getDefaultLibFileName.bind(host),
     getCurrentDirectory: host.getCurrentDirectory.bind(host),
     getNewLine: host.getNewLine.bind(host),
     useCaseSensitiveFileNames: host.useCaseSensitiveFileNames.bind(host),
@@ -121,21 +128,53 @@ function preprocess(options?: ts.CompilerOptions) {
       throw new Error(msg)
     }
 
-    settings.options.target = ts.ScriptTarget.ESNext
-    settings.options.sourceMap = false
-    settings.options.declaration = false
-    settings.options.alwaysStrict = false
+    // override
+    const { options } = settings
+    options.target = ts.ScriptTarget.ESNext
+    options.module = ts.ModuleKind.ESNext
+    options.sourceMap = false
+    options.declaration = false
+    options.alwaysStrict = false
+
+    // options.isolatedModules = true
+
+    // // transpileModule does not write anything to disk so there is no need to verify that there are no conflicts between input and output paths.
+    // options.suppressOutputPathCheck = true
+
+    // Filename can be non-ts file.
+    options.allowNonTsExtensions = true
+
+    // // We are not returning a sourceFile for lib file when asked by the program,
+    // // so pass --noLib to avoid reporting a file not found error.
+    // options.noLib = true
+
+    // // Clear out other settings that would not be used in transpiling this module
+    // options.lib = undefined
+    // options.types = undefined
+    // options.noEmit = undefined
+    // options.noEmitOnError = undefined
+    // options.paths = undefined
+    // options.rootDirs = undefined
+    // options.declaration = undefined
+    // options.composite = undefined
+    // options.declarationDir = undefined
+    // options.out = undefined
+    // options.outFile = undefined
+
+    // // We are not doing a full typecheck, we are not resolving the whole context,
+    // // so pass --noResolve to avoid reporting missing file errors.
+    // options.noResolve = true
 
     const rootFiles = [filename]
-    const proxyHost = createProxyHost(ts.createCompilerHost(settings.options), {
+    const proxyHost = createProxyHost(ts.createCompilerHost(options), {
       name: filename,
       content
     })
 
     let code = ''
     const writeFile: ts.WriteFileCallback = (fileName, data) => {
-      console.log(fileName)
-      console.log(data)
+      // console.log(fileName)
+      // console.log(data)
       if (fileName.endsWith('.js')) {
         code = data
       }
@@ -145,14 +184,14 @@ function preprocess(options?: ts.CompilerOptions) {
       before: [importTransformer()]
     }
 
-    const program = ts.createProgram(rootFiles, settings.options, proxyHost)
-    program.emit(
-      proxyHost.getSourceFile(filename, ts.ScriptTarget.ESNext),
-      writeFile,
-      undefined,
-      undefined,
-      customTransformers
-    )
+    const program = ts.createProgram(rootFiles, options, proxyHost)
+    program.emit(undefined, writeFile, undefined, undefined, customTransformers)
+
+    const diagnostics = clearDiagnostics(ts.getPreEmitDiagnostics(program))
+    if (diagnostics.length) {
+      const s = ts.formatDiagnosticsWithColorAndContext(diagnostics, formatHost)
+      console.log(s)
+    }
 
     return { code }
   }
