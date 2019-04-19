@@ -1,14 +1,27 @@
-import DummyClass from "../src/svelte-ts-preprocess"
+import preprocess from '../src/svelte-ts-preprocess'
 
-/**
- * Dummy test
- */
-describe("Dummy test", () => {
-  it("works if true is truthy", () => {
-    expect(true).toBeTruthy()
+describe('preprocess test', () => {
+  it('should be function', () => {
+    expect(preprocess).toBeInstanceOf(Function)
   })
 
-  it("DummyClass is instantiable", () => {
-    expect(new DummyClass()).toBeInstanceOf(DummyClass)
+  it('returns object with "script" property', () => {
+    expect(preprocess()).toHaveProperty('script')
+  })
+
+  it('run preprocess', () => {
+    // const code = ``
+    const content = ``
+    const filename = 'Component.svelte'
+    const attributes = {
+      lang: 'ts'
+    }
+    expect(
+      preprocess().script({
+        content,
+        filename,
+        attributes
+      })
+    ).toHaveProperty('code')
   })
 })
