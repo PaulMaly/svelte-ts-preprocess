@@ -87,7 +87,62 @@ interface Script {
   }
 }
 
-function preprocess(options?: ts.CompilerOptions) {
+export const defaultCompilerOptions: ts.CompilerOptions = {
+  target: ts.ScriptTarget.ESNext,
+  module: ts.ModuleKind.ESNext,
+  allowNonTsExtensions: true,
+  alwaysStrict: false
+}
+
+export interface Env {
+  basePath: string
+  formatDiagnosticHost: ts.FormatDiagnosticsHost
+}
+
+export function createEnv(basePath?: string): Env {
+  basePath = basePath ? basePath : process.cwd()
+  const formatDiagnosticHost = getFormatDiagnosticsHost(basePath)
+  return { basePath, formatDiagnosticHost }
+}
+
+export function readConfigFile(env: Env, path?: string) {
+  const configPath = path ? path : ts.findConfigFile(env.basePath, ts.sys.fileExists)
+  if (!configPath) {
+    throw new Error("Could not find a valid 'tsconfig.json'.")
+  }
+
+  // read config
+  const result = ts.readConfigFile(configPath, ts.sys.readFile)
+  if (result.error) {
+    const msg = ts.formatDiagnostics([result.error], env.formatDiagnosticHost)
+    throw new Error(msg)
+  }
+
+  const { config } = result
+  const settings = ts.convertCompilerOptionsFromJson(config.compilerOptions, env.basePath)
+  if (!settings.options) {
+    const msg = ts.formatDiagnostics(settings.errors, env.formatDiagnosticHost)
+    throw new Error(msg)
+  }
+
+  return settings.options
+}
+
+export interface PreprocessOptions {
+  compilerOptions: ts.CompilerOptions
+  env: Env
+}
+
+export function createPreprocessOptions(opts?: Partial<PreprocessOptions>): PreprocessOptions {
+  opts = opts ? opts : {}
+
+  return {
+    compilerOptions: opts.compilerOptions ? opts.compilerOptions : defaultCompilerOptions,
+    env: opts.env ? opts.env : createEnv()
+  }
+}
+
+function preprocess(opts?: Partial<PreprocessOptions>) {
   function script({ content, attributes, filename }: Script) {
     if (!attributes.lang) {
       return
@@ -98,75 +153,10 @@ function preprocess(options?: ts.CompilerOptions) {
       return
     }
 
-    const basePath: string = process.cwd()
-    const formatHost = getFormatDiagnosticsHost(basePath)
-    const configPath = ts.findConfigFile(basePath, ts.sys.fileExists)
-    if (!configPath) {
-      throw new Error("Could not find a valid 'tsconfig.json'.")
-    }
-    // https://github.com/Microsoft/TypeScript/blob/9c71eaf59040ae75343da8cdff01344020f5bba2/tests/cases/compiler/APISample_parseConfig.ts
-    // read config
-    const result = ts.readConfigFile(configPath, ts.sys.readFile)
-    if (result.error) {
-      const msg = ts.formatDiagnostics([result.error], formatHost)
-      throw new Error(msg)
-    }
-
-    // parse config
-    const { config, error } = ts.parseConfigFileTextToJson(
-      configPath,
-      JSON.stringify(result.config)
-    )
-    if (error) {
-      const msg = ts.formatDiagnostics([error], formatHost)
-      throw new Error(msg)
-    }
-
-    const settings = ts.convertCompilerOptionsFromJson(config.compilerOptions, basePath)
-    if (!settings.options) {
-      const msg = ts.formatDiagnostics(settings.errors, formatHost)
-      throw new Error(msg)
-    }
-
-    // override
-    const { options } = settings
-    options.target = ts.ScriptTarget.ESNext
-    options.module = ts.ModuleKind.ESNext
-    options.sourceMap = false
-    options.declaration = false
-    options.alwaysStrict = false
-
-    // options.isolatedModules = true
-
-    // // transpileModule does not write anything to disk so there is no need to verify that there are no conflicts between input and output paths.
-    // options.suppressOutputPathCheck = true
-
-    // Filename can be non-ts file.
-    options.allowNonTsExtensions = true
-
-    // // We are not returning a sourceFile for lib file when asked by the program,
-    // // so pass --noLib to avoid reporting a file not found error.
-    // options.noLib = true
-
-    // // Clear out other settings that would not be used in transpiling this module
-    // options.lib = undefined
-    // options.types = undefined
-    // options.noEmit = undefined
-    // options.noEmitOnError = undefined
-    // options.paths = undefined
-    // options.rootDirs = undefined
-    // options.declaration = undefined
-    // options.composite = undefined
-    // options.declarationDir = undefined
-    // options.out = undefined
-    // options.outFile = undefined
-
-    // // We are not doing a full typecheck, we are not resolving the whole context,
-    // // so pass --noResolve to avoid reporting missing file errors.
-    // options.noResolve = true
+    const options = createPreprocessOptions(opts)
 
     const rootFiles = [filename]
-    const proxyHost = createProxyHost(ts.createCompilerHost(options), {
+    const proxyHost = createProxyHost(ts.createCompilerHost(options.compilerOptions), {
       name: filename,
       content
     })
@@ -184,12 +174,15 @@ function preprocess(options?: ts.CompilerOptions) {
       before: [importTransformer()]
     }
 
-    const program = ts.createProgram(rootFiles, options, proxyHost)
+    const program = ts.createProgram(rootFiles, options.compilerOptions, proxyHost)
     program.emit(undefined, writeFile, undefined, undefined, customTransformers)
 
     const diagnostics = clearDiagnostics(ts.getPreEmitDiagnostics(program))
     if (diagnostics.length) {
-      const s = ts.formatDiagnosticsWithColorAndContext(diagnostics, formatHost)
+      const s = ts.formatDiagnosticsWithColorAndContext(
+        diagnostics,
+        options.env.formatDiagnosticHost
+      )
       console.log(s)
     }
 
