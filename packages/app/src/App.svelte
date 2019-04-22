@@ -9,8 +9,6 @@
 
 <script lang="ts">
 	import Form from "./Form.svelte";
-	Form;
 
-	export let name;
-	let x: number = "string";
+	export let name:string;
 </script>

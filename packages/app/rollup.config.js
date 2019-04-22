@@ -3,7 +3,6 @@ import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
 
-import preprocess from "svelte-preprocess";
 import ts from "@pyoner/svelte-ts-preprocess";
 
 const production = !process.env.ROLLUP_WATCH;
@@ -25,12 +24,7 @@ export default {
       css: css => {
         css.write("public/bundle.css");
       },
-      preprocess: preprocess({
-        transformers: {
-          ts: ts().script
-        },
-        aliases: [["ts", "typescript"]]
-      })
+      preprocess: ts()
     }),
 
     // If you have external dependencies installed from

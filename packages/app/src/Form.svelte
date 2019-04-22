@@ -9,8 +9,8 @@
 </div>
 
 <script lang="ts">
-	const x: number = "xxx";
-
+ /* const x: number = "xxx";
+  */
 	interface Person {
 		name: string;
 		age: number;
@@ -21,7 +21,7 @@
 		name: "Alice",
 		age: 18
 	};
-	const b: Person = {
+ /* const b: Person = {
 		age: "bad"
-	};
+	  }; */
 </script>

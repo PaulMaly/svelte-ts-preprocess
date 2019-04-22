@@ -3743,13 +3743,6 @@ ignore@^4.0.3:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
 
-import-cwd@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/import-cwd/-/import-cwd-2.1.0.tgz#aa6cf36e722761285cb371ec6519f53e2435b0a9"
-  integrity sha1-qmzzbnInYShcs3HsZRn1PiQ1sKk=
-  dependencies:
-    import-from "^2.1.0"
-
 import-fresh@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/import-fresh/-/import-fresh-2.0.0.tgz#d81355c15612d386c61f9ddd3922d4304822a546"
@@ -6518,14 +6511,6 @@ posix-character-classes@^0.1.0:
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
   integrity sha1-AerA/jta9xoqbAL+q7jB/vfgDqs=
 
-postcss-load-config@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/postcss-load-config/-/postcss-load-config-2.0.0.tgz#f1312ddbf5912cd747177083c5ef7a19d62ee484"
-  integrity sha512-V5JBLzw406BB8UIfsAWSK2KSwIJ5yoEIVFb4gVkXci0QdKgA24jLmHZ/ghe/GgX0lJ0/D1uUK1ejhzEY94MChQ==
-  dependencies:
-    cosmiconfig "^4.0.0"
-    import-cwd "^2.0.0"
-
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
@@ -7456,23 +7441,23 @@ simple-git@^1.85.0:
   dependencies:
     debug "^4.0.1"
 
-sirv-cli@^0.2.3:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/sirv-cli/-/sirv-cli-0.2.5.tgz#2de1b6aa909a2a1c246ab2df8c9b33658a4284bc"
-  integrity sha512-RYej7AH7nLGcNXNZythOeqS8IS0660lV9nvyY9/5joxp5QQ8HLdN1PJGCptCQdTfUyDQKjayNBJZD1XMuYVwjw==
+sirv-cli@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/sirv-cli/-/sirv-cli-0.3.1.tgz#ecceea6dc3f88ac88792c4cc45330401f44a9a54"
+  integrity sha512-yS1eklyTPOjjm+He5VesrGR3m09nqsmAK7OiqvZ/9rkRhAlG68/Ve7fFAHjaDN4qVfMXXeX4yRMVlGYfCIGUKQ==
   dependencies:
     console-clear "^1.1.0"
     get-port "^3.2.0"
     kleur "^3.0.0"
     local-access "^1.0.1"
     sade "^1.4.0"
-    sirv "^0.2.5"
+    sirv "^0.3.1"
     tinydate "^1.0.0"
 
-sirv@^0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/sirv/-/sirv-0.2.5.tgz#da56a42e5f60b0822456cee7bf53e217305f4c3b"
-  integrity sha512-q7F1VElkj/WPrXwWsdHK9gqi2rd94oaMQc3VtN8N1TNHrKxlsd7hGsPFiOIodRxre8eHCV1XK1iqC1BDaZ+IKA==
+sirv@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/sirv/-/sirv-0.3.1.tgz#a346c5d9bb4b50f60cb73423041b9c1694532287"
+  integrity sha512-03p4fuXPfhlNrDjUBw5bGF//4i0Rjwf7hVm8XhuKgeguHGQPr4pV+lgAJZKSP9BaJKn+QG9QvTxLX1wSYshccg==
   dependencies:
     "@polka/url" "^0.5.0"
     mime "^2.3.1"
@@ -7928,15 +7913,7 @@ supports-hyperlinks@^1.0.1:
     has-flag "^2.0.0"
     supports-color "^5.0.0"
 
-svelte-preprocess@^2.6.2:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/svelte-preprocess/-/svelte-preprocess-2.6.2.tgz#f312cc3b03f333b4057c30658b0c3f49aa636588"
-  integrity sha512-7PS5LtKJBbSnzaS6DYKMtzAaGQuTHyJhSmqNsTc0mHF3RJOVOLfAZ/dS4aVKKUPV8OL8bTbxan3jPJT5fgcMbQ==
-  dependencies:
-    postcss-load-config "^2.0.0"
-    strip-indent "^2.0.0"
-
-svelte@^3.0.0-beta.7:
+svelte@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.0.0.tgz#70e1e9d9980a5cd6c5516b62518e49dab5859bb4"
   integrity sha512-4QQ7eBuVw/t0kMSSjLCiAjQYTj7ZF0OtH24YOWtTrTJHTLd58gEAPZeKSGOYDXtwpcrMi4Cxo3MgEbdI1m4erg==
