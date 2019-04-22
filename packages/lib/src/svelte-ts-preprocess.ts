@@ -145,7 +145,7 @@ export function createPreprocessOptions(opts?: Partial<PreprocessOptions>): Prep
   }
 }
 
-function preprocess(opts?: Partial<PreprocessOptions>) {
+export function preprocess(opts?: Partial<PreprocessOptions>) {
   function script({ content, attributes, filename }: Script) {
     if (!attributes.lang) {
       return
@@ -193,5 +193,3 @@ function preprocess(opts?: Partial<PreprocessOptions>) {
   }
   return { script }
 }
-
-export default preprocess

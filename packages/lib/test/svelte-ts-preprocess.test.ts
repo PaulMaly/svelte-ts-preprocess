@@ -1,4 +1,4 @@
-import preprocess from '../src/svelte-ts-preprocess'
+import { preprocess } from '../src/svelte-ts-preprocess'
 
 describe('preprocess test', () => {
   it('should be function', () => {
@@ -12,10 +12,8 @@ describe('preprocess test', () => {
   it('run preprocess', () => {
     // const code = ``
     const content = `//comment
-import path from 'path';
 import Form from './Form.svelte';
 
-path.join()
 function x(){return 5;}
 console.log(x())
 let c: number = 5;
