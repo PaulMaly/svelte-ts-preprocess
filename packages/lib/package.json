@@ -1,7 +1,7 @@
 {
   "name": "@pyoner/svelte-ts-preprocess",
   "version": "0.0.0",
-  "description": "",
+  "description": "Typescript preprocessor for Svelte 3",
   "keywords": [
     "svelte",
     "svelte3",

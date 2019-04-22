@@ -1,4 +1,4 @@
-# Svelte Typescript Preprocess
+# Typescript preprocessor for Svelte 3
 
 ## Install
 
