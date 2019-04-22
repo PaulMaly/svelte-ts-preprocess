@@ -26,8 +26,11 @@ function importTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
 }
 
 function isSvelteImport(d: ts.Diagnostic) {
-  return d.code == 2307 && typeof d.messageText == 'string' && /\.svelte['"]\.$/.test(d.messageText)
+  return (
+    d.code === 2307 && typeof d.messageText === 'string' && /\.svelte['"]\.$/.test(d.messageText)
+  )
 }
+
 function clearDiagnostics(diagnostics: ReadonlyArray<ts.Diagnostic>) {
   return diagnostics.filter(d => !isSvelteImport(d))
 }
