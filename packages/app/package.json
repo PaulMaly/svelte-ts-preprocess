@@ -11,7 +11,7 @@
     "sirv-cli": "^0.2.3",
     "svelte": "^3.0.0-beta.7",
     "svelte-preprocess": "^2.6.2",
-    "svelte-ts-preprocess": "^1.0.1"
+    "@pyoner/svelte-ts-preprocess": "*"
   },
   "scripts": {
     "build": "rollup -c",

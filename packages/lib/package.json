@@ -2,7 +2,11 @@
   "name": "@pyoner/svelte-ts-preprocess",
   "version": "0.0.0",
   "description": "",
-  "keywords": ["svelte", "svelte3", "preprocess"],
+  "keywords": [
+    "svelte",
+    "svelte3",
+    "preprocess"
+  ],
   "main": "dist/svelte-ts-preprocess.umd.js",
   "module": "dist/svelte-ts-preprocess.es5.js",
   "typings": "dist/types/svelte-ts-preprocess.d.ts",
