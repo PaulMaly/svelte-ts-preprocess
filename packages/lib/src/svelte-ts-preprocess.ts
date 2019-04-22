@@ -35,12 +35,12 @@ function clearDiagnostics(diagnostics: ReadonlyArray<ts.Diagnostic>) {
   return diagnostics.filter(d => !isSvelteImport(d))
 }
 
-function getFormatDiagnosticsHost(cwd: string) {
+function createFormatDiagnosticsHost(cwd: string): ts.FormatDiagnosticsHost {
   return {
     getCanonicalFileName: fileName => fileName,
     getCurrentDirectory: () => cwd,
     getNewLine: () => ts.sys.newLine
-  } as ts.FormatDiagnosticsHost
+  }
 }
 
 interface File {
@@ -104,7 +104,7 @@ export interface Env {
 
 export function createEnv(basePath?: string): Env {
   basePath = basePath ? basePath : process.cwd()
-  const formatDiagnosticHost = getFormatDiagnosticsHost(basePath)
+  const formatDiagnosticHost = createFormatDiagnosticsHost(basePath)
   return { basePath, formatDiagnosticHost }
 }
 
