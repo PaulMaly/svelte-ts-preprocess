@@ -1,6 +1,6 @@
 {
-  "name": "@pyoner/svelte-ts-preprocess",
-  "version": "0.0.1",
+  "name": "svelte-ts-preprocess",
+  "version": "1.1.0",
   "description": "Typescript preprocessor for Svelte 3",
   "keywords": [
     "svelte",
@@ -12,11 +12,16 @@
   "files": [
     "dist"
   ],
-  "author": "Jungle <devex.soft@gmail.com>",
+  "author": "PaulMaly",
+  "contributors": ["Jungle <devex.soft@gmail.com>"],
   "repository": {
     "type": "git",
-    "url": "https://github.com/pyoner/svelte-ts-preprocess"
+    "url": "https://github.com/PaulMaly/svelte-ts-preprocess"
   },
+  "bugs": {
+    "url": "https://github.com/PaulMaly/svelte-ts-preprocess/issues"
+  },
+  "homepage": "https://github.com/PaulMaly/svelte-ts-preprocess",
   "license": "MIT",
   "engines": {
     "node": ">=6.0.0"

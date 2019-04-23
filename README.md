@@ -3,7 +3,7 @@
 ## Install
 
 ```bash
-npm i @pyoner/svelte-ts-preprocess
+npm i svelte-ts-preprocess
 ```
 
 ## Rollup config
@@ -14,7 +14,7 @@ import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
 
-import { preprocess } from "@pyoner/svelte-ts-preprocess";
+import { preprocess } from "svelte-ts-preprocess";
 
 const production = !process.env.ROLLUP_WATCH;
 
