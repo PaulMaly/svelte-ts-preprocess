@@ -1,14 +1,3 @@
-# Typescript preprocessor for Svelte 3
-
-## Install
-
-```bash
-npm i svelte-ts-preprocess
-```
-
-## Rollup config
-
-```javascript
 import svelte from "rollup-plugin-svelte";
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
@@ -51,4 +40,3 @@ export default {
     production && terser()
   ]
 };
-```

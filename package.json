@@ -1,37 +1,4 @@
 {
-    "name": "svelte-ts-preprocess",
-    "version": "1.0.1",
-    "description": "Typescript preprocessor for Svelte 3",
-    "main": "src/index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "prepublish": "npm run lint",
-        "lint": "eslint src"
-    },
-    "files": [
-        "src/index.js"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/PaulMaly/svelte-ts-preprocess.git"
-    },
-    "keywords": [
-        "svelte",
-        "preprocessors"
-    ],
-    "author": "PaulMaly",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/PaulMaly/svelte-ts-preprocess/issues"
-    },
-    "homepage": "https://github.com/PaulMaly/svelte-ts-preprocess#readme",
-    "devDependencies": {
-        "eslint": "latest",
-        "eslint-plugin-import": "latest"
-    },
-    "dependencies": {
-        "colors": "latest",
-        "json5": "^2.1.0",
-        "typescript": "latest"
-    }
+  "private": true,
+  "workspaces": ["packages/lib", "packages/app"]
 }
