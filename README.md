@@ -1,1 +1,0 @@
-/home/jungle/repo/svelte-ts-preprocess/packages/lib/README.md
