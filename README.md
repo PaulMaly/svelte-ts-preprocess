@@ -52,3 +52,25 @@ export default {
   ]
 };
 ```
+
+# For Contributors
+
+To install this monorepo you can use `lerna + npm`
+```bash
+cd svelte-ts-preprocess
+npm i lerna -g
+lerna bootstrap
+```
+
+or `lerna + yarn` see [use workspaces](https://github.com/lerna/lerna/tree/master/commands/bootstrap#--use-workspaces)
+```bash
+cd svelte-ts-preprocess
+yarn i lerna -g
+lerna bootstrap --use-workspaces
+```
+
+or `yarn only`
+```bash
+cd svelte-ts-preprocess
+yarn install
+```
