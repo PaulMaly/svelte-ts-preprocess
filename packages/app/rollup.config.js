@@ -2,6 +2,7 @@ import svelte from "rollup-plugin-svelte";
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
+import typescript from "rollup-plugin-typescript2";
 
 import { preprocess } from "svelte-ts-preprocess";
 
@@ -34,6 +35,7 @@ export default {
     // https://github.com/rollup/rollup-plugin-commonjs
     resolve(),
     commonjs(),
+    typescript(),
 
     // If we're building for production (npm run build
     // instead of npm run dev), minify
