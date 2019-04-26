@@ -93,6 +93,7 @@ interface Script {
 export const defaultCompilerOptions: ts.CompilerOptions = {
   target: ts.ScriptTarget.ESNext,
   module: ts.ModuleKind.ESNext,
+  moduleResolution: ts.ModuleResolutionKind.NodeJs,
   allowNonTsExtensions: true,
   alwaysStrict: false
 }

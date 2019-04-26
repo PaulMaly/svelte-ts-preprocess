@@ -4,9 +4,19 @@ import commonjs from "rollup-plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
 import typescript from "rollup-plugin-typescript2";
 
-import { preprocess } from "svelte-ts-preprocess";
+import { preprocess, createEnv, readConfigFile } from "svelte-ts-preprocess";
 
 const production = !process.env.ROLLUP_WATCH;
+
+const env = createEnv();
+const compilerOptions = readConfigFile(env);
+const opts = {
+  env,
+  compilerOptions: {
+    ...compilerOptions,
+    allowNonTsExtensions: true
+  }
+};
 
 export default {
   input: "src/main.js",
@@ -25,7 +35,7 @@ export default {
       css: css => {
         css.write("public/bundle.css");
       },
-      preprocess: preprocess()
+      preprocess: preprocess(opts)
     }),
 
     // If you have external dependencies installed from
