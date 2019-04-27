@@ -53,6 +53,10 @@ export default {
 };
 ```
 
+# Quick starter template
+
+[svelte-ts-template](https://github.com/pyoner/svelte-ts-template)
+
 # For Contributors
 
 To install this monorepo you can use `lerna + npm`
