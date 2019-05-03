@@ -52,3 +52,11 @@ export default {
   ]
 };
 ```
+
+# Quick starter template
+
+[svelte-ts-template](https://github.com/pyoner/svelte-ts-template)
+
+# Typings
+
+[svelte-types](https://github.com/pyoner/svelte-types)
