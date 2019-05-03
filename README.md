@@ -57,6 +57,10 @@ export default {
 
 [svelte-ts-template](https://github.com/pyoner/svelte-ts-template)
 
+# Typings
+
+[svelte-types](https://github.com/pyoner/svelte-types)
+
 # For Contributors
 
 To install this monorepo you can use `lerna + npm`
