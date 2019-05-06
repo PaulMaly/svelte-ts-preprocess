@@ -1,6 +1,6 @@
 {
   "name": "svelte-ts-preprocess",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Typescript preprocessor for Svelte 3",
   "keywords": [
     "svelte",
