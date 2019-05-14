@@ -157,6 +157,8 @@ export function preprocess(opts?: Partial<PreprocessOptions>) {
       return
     }
 
+    filename = ts.sys.resolvePath(filename)
+
     const options = createPreprocessOptions(opts)
 
     const rootFiles = [filename]
