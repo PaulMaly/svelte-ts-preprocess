@@ -25,6 +25,13 @@ function importTransformer<T extends ts.Node>(): ts.TransformerFactory<T> {
   }
 }
 
+function isSameFile(fileName: string, filename: string) {
+  if (filename === fileName) {
+    return true
+  }
+  return filename === ts.sys.resolvePath(fileName)
+}
+
 function isSvelteImport(d: ts.Diagnostic) {
   return (
     d.code === 2307 && typeof d.messageText === 'string' && /\.svelte['"]\.$/.test(d.messageText)
@@ -55,7 +62,7 @@ function createProxyHost(host: ts.CompilerHost, file: File) {
       languageVersion: ts.ScriptTarget,
       _onError?: (message: string) => void
     ) => {
-      return fileName === file.name
+      return isSameFile(fileName, file.name)
         ? ts.createSourceFile(file.name, file.content, languageVersion)
         : host.getSourceFile(fileName, languageVersion, _onError)
     },
@@ -63,14 +70,15 @@ function createProxyHost(host: ts.CompilerHost, file: File) {
       throw new Error('unsupported')
     },
     getCanonicalFileName: fileName =>
-      fileName === file.name
+      isSameFile(fileName, file.name)
         ? ts.sys.useCaseSensitiveFileNames
           ? fileName
           : fileName.toLowerCase()
         : host.getCanonicalFileName(fileName),
 
-    fileExists: fileName => (fileName === file.name ? true : host.fileExists(fileName)),
-    readFile: fileName => (fileName === file.name ? file.content : host.readFile(fileName)),
+    fileExists: fileName => (isSameFile(fileName, file.name) ? true : host.fileExists(fileName)),
+    readFile: fileName =>
+      isSameFile(fileName, file.name) ? file.content : host.readFile(fileName),
 
     getDefaultLibFileName: host.getDefaultLibFileName.bind(host),
     getCurrentDirectory: host.getCurrentDirectory.bind(host),
