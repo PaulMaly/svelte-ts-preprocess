@@ -168,11 +168,14 @@ export function preprocess(opts?: Partial<PreprocessOptions>) {
     })
 
     let code = ''
+    let map = ''
     const writeFile: ts.WriteFileCallback = (fileName, data) => {
       // console.log(fileName)
       // console.log(data)
       if (fileName.endsWith('.js')) {
         code = data
+      } else if (filename.endsWith('.map')) {
+        map = data
       }
     }
 
@@ -192,6 +195,7 @@ export function preprocess(opts?: Partial<PreprocessOptions>) {
       console.log(s)
     }
 
+    if (map !== '') return { code, map }
     return { code }
   }
   return { script }
